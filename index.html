@@ -601,7 +601,7 @@
             { cat: "🌿 Simbiosis Parasitisme", q: "Hubungan antara benalu dan pohon yang ditumpanginya adalah contoh simbiosis...", opts: ["Mutualisme", "Komensalisme", "Parasitisme", "Netralisme"], ans: 2, exp: "Benalu untung karena mengambil sari makanan, sedangkan pohon dirugikan." },
             { cat: "🌳 Simbiosis Komensalisme", q: "Anggrek yang menempel pada pohon tinggi adalah contoh simbiosis...", opts: ["Mutualisme", "Komensalisme", "Parasitisme", "Predasi"], ans: 1, exp: "Anggrek mendapat tempat hidup tanpa merugikan pohon yang ditumpanginya." },
             { cat: "☀️ Adaptasi Tumbuhan", q: "Tumbuhan kaktus di gurun beradaptasi dengan mengubah daunnya menjadi...", opts: ["Lebar dan tipis", "Duri untuk mengurangi penguapan air", "Bunga beraroma wangi", "Buah manis"], ans: 1, exp: "Duri kaktus berfungsi mengurangi penguapan air di daerah panas." },
-            { cat: "💧 Siklus Air", q: "Penguapan air dari permukaan bumi karena panas matahari disebut...", _opts: ["Kondensasi", "Presipitasi", "Evaporasi", "Infiltrasi"], opts: ["Kondensasi", "Presipitasi", "Evaporasi", "Infiltrasi"], ans: 2, exp: "Evaporasi adalah proses perubahan air cair menjadi uap air oleh panas matahari." },
+            { cat: "💧 Siklus Air", q: "Penguapan air dari permukaan bumi karena panas matahari disebut...", opts: ["Kondensasi", "Presipitasi", "Evaporasi", "Infiltrasi"], ans: 2, exp: "Evaporasi adalah proses perubahan air cair menjadi uap air oleh panas matahari." },
             { cat: "☁️ Hujan", q: "Proses pembentukan titik-titik air di awan dari pendinginan uap air disebut...", opts: ["Evaporasi", "Kondensasi", "Transpirasi", "Respirasi"], ans: 1, exp: "Kondensasi adalah proses pengubahan uap air menjadi titik-titik air membentuk awan." },
             { cat: "🌱 Penyerbukan", q: "Perantara alami yang membantu penyerbukan bunga adalah...", opts: ["Batu dan kerikil", "Lebah, kupu-kupu, dan angin", "Air laut", "Plastik sampah"], ans: 1, exp: "Serangga seperti lebah dan kupu-kupu membantu memindahkan serbuk sari bunga." }
         ];
@@ -743,6 +743,10 @@
             document.getElementById('screen-setup').classList.add('hidden');
             document.getElementById('screen-game').classList.remove('hidden');
 
+            // Hide any lingering feedback screens from previous matches
+            document.getElementById('feedback-team1').classList.add('hidden');
+            document.getElementById('feedback-team2').classList.add('hidden');
+
             updateUI();
             loadNewQuestion('team1');
             loadNewQuestion('team2');
@@ -786,6 +790,7 @@
             if (team === 'team1') {
                 if (team1State.timerInterval) clearInterval(team1State.timerInterval);
                 team1State.timer = 20;
+                document.getElementById('timer-team1').innerText = team1State.timer;
                 team1State.timerInterval = setInterval(() => {
                     if (gameState.status !== 'playing') return;
                     team1State.timer--;
@@ -801,6 +806,7 @@
             } else {
                 if (team2State.timerInterval) clearInterval(team2State.timerInterval);
                 team2State.timer = 20;
+                document.getElementById('timer-team2').innerText = team2State.timer;
                 team2State.timerInterval = setInterval(() => {
                     if (gameState.status !== 'playing') return;
                     team2State.timer--;
@@ -821,10 +827,28 @@
                 team1State.wrong++;
                 team1State.combo = 0;
                 showFeedback('team1', false, '⏰ WAKTU HABIS!', 'Waktu 20 detik habis. Jawaban dihitung salah dan combo direset.');
+                updateUI();
+                setTimeout(() => {
+                    const fb1 = document.getElementById('feedback-team1');
+                    if (fb1) fb1.classList.add('hidden');
+                    team1State.isLocked = false;
+                    if (gameState.status === 'playing') {
+                        loadNewQuestion('team1');
+                    }
+                }, 1200);
             } else {
                 team2State.wrong++;
                 team2State.combo = 0;
                 showFeedback('team2', false, '⏰ WAKTU HABIS!', 'Waktu 20 detik habis. Jawaban dihitung salah dan combo direset.');
+                updateUI();
+                setTimeout(() => {
+                    const fb2 = document.getElementById('feedback-team2');
+                    if (fb2) fb2.classList.add('hidden');
+                    team2State.isLocked = false;
+                    if (gameState.status === 'playing') {
+                        loadNewQuestion('team2');
+                    }
+                }, 1200);
             }
         }
 
@@ -832,7 +856,6 @@
            QUESTION & ANSWER MANAGEMENT
            ========================================== */
         function loadNewQuestion(team) {
-            // Pick random question, ensuring both teams don't get the exact same question simultaneously if possible
             let qIdx = Math.floor(Math.random() * ipasQuestions.length);
             if (team === 'team1' && qIdx === team2State.currentQIndex) {
                 qIdx = (qIdx + 1) % ipasQuestions.length;
@@ -852,7 +875,6 @@
             const optsContainer = document.getElementById(`options-container-${prefix}`);
             optsContainer.innerHTML = '';
 
-            // Shuffle options or keep order with randomized display
             q.opts.forEach((optText, optIdx) => {
                 const btn = document.createElement('button');
                 btn.className = team === 'team1' 
@@ -896,119 +918,140 @@
                 playSound('wrong');
                 tState.wrong++;
                 tState.combo = 0;
-                showFeedback(team, false, '❌ BELUM TEPAT!', `Jawaban yang benar: ${ipasQuestions[tState.currentQIndex].opts[correctOpt]}. ${explanation}`);
+                showFeedback(team, false, '❌ BELUM TEPAT!', `Jawaban benar: ${ipasQuestions[tState.currentQIndex].opts[correctOpt]}. ${explanation}`);
             }
 
             updateUI();
+            
+            if (tState.score >= 10) {
+                triggerVictory(team);
+                return;
+            }
             checkMatchPointOrVictory();
 
-            // Hide feedback and load new question after 1.8 seconds
+            // Instantly transition to the next question after brief feedback (whether correct or incorrect)
             setTimeout(() => {
                 const prefix = team === 'team1' ? '1' : '2';
-                document.getElementById(`feedback-team-${prefix}`).classList.add('hidden');
+                const fbEl = document.getElementById(`feedback-team${prefix}`);
+                if (fbEl) fbEl.classList.add('hidden');
                 tState.isLocked = false;
                 if (gameState.status === 'playing') {
                     loadNewQuestion(team);
                 }
-            }, 1800);
+            }, 1200);
         }
 
         function showFeedback(team, isCorrect, title, desc) {
             const prefix = team === 'team1' ? '1' : '2';
-            const fb = document.getElementById(`feedback-team-${prefix}`);
-            document.getElementById(`feedback-icon-1` === `feedback-icon-${prefix}` ? `feedback-icon-1` : `feedback-icon-${prefix}`).innerText = isCorrect ? '🎉' : '❌';
-            document.getElementById(`feedback-title-${prefix}`).innerText = title;
-            document.getElementById(`feedback-title-${prefix}`).className = isCorrect ? 'text-2xl font-black text-emerald-400 mb-2' : 'text-2xl font-black text-rose-400 mb-2';
-            document.getElementById(`feedback-desc-${prefix}`).innerText = desc;
-            fb.classList.remove('hidden');
+            const fb = document.getElementById(`feedback-team${prefix}`);
+            if (fb) {
+                const iconEl = document.getElementById(`feedback-icon-${prefix}`);
+                if (iconEl) iconEl.innerText = isCorrect ? '🎉' : '❌';
+                const titleEl = document.getElementById(`feedback-title-${prefix}`);
+                if (titleEl) {
+                    titleEl.innerText = title;
+                    titleEl.className = isCorrect ? 'text-2xl font-black text-emerald-400 mb-2' : 'text-2xl font-black text-rose-400 mb-2';
+                }
+                const descEl = document.getElementById(`feedback-desc-${prefix}`);
+                if (descEl) descEl.innerText = desc;
+                fb.classList.remove('hidden');
+            }
         }
 
         /* ==========================================
-           PHYSICAL TUG-OF-WAR ROPE MECHANICS
+           TUG OF WAR ROPE & VISUAL MECHANICS
            ========================================== */
-        function pullRope(team, comboBonus) {
+        function pullRope(team, bonus) {
             playSound('pull');
-            let force = gameState.pullStrength + comboBonus;
+            let strength = gameState.pullStrength + bonus;
             if (team === 'team1') {
-                gameState.ropePosition -= force;
-                triggerArenaEffects('team1');
+                gameState.ropePosition -= strength;
+                triggerTeamAnimation('1');
             } else {
-                gameState.ropePosition += force;
-                triggerArenaEffects('team2');
+                gameState.ropePosition += strength;
+                triggerTeamAnimation('2');
             }
 
-            // Clamp rope between -100 and +100
+            // Clamp between -100 and 100
             gameState.ropePosition = Math.max(-100, Math.min(100, gameState.ropePosition));
-            animateRopePosition();
+            updateRopeVisuals();
         }
 
-        function animateRopePosition() {
+        function triggerTeamAnimation(teamNum) {
+            const charEl = document.getElementById(`avatar-char-${teamNum}`);
+            const dustEl = document.getElementById(`effect-dust-${teamNum}`);
+            if (charEl) {
+                charEl.classList.add('transform', 'scale-125');
+                setTimeout(() => charEl.classList.remove('transform', 'scale-125'), 300);
+            }
+            if (dustEl) {
+                dustEl.style.opacity = '1';
+                setTimeout(() => dustEl.style.opacity = '0', 400);
+            }
+        }
+
+        function updateRopeVisuals() {
             const ropeEl = document.getElementById('rope-element');
             const knotEl = document.getElementById('rope-knot');
-            const char1 = document.getElementById('chars-team1');
-            const char2 = document.getElementById('chars-team2');
+            const indicatorEl = document.getElementById('arena-status-indicator');
+            const chars1 = document.getElementById('chars-team1');
+            const chars2 = document.getElementById('chars-team2');
 
-            // Map ropePosition (-100 to +100) to pixel translation or percentage offset
-            // Center is 0. Negative = pulled left (Team 1), Positive = pulled right (Team 2)
-            let offsetPercent = (gameState.ropePosition / 100) * 35; // max 35% shift
+            // Map ropePosition (-100 to 100) to percentage offset
+            // When ropePosition is -100 (Team 1 pulled left), rope shifts left
+            let translatePercent = gameState.ropePosition * 0.35; // scaling factor for smooth motion
 
-            ropeEl.style.transform = `translateX(${offsetPercent}%)`;
-            knotEl.style.left = `calc(50% + ${offsetPercent}%)`;
+            if (ropeEl) {
+                ropeEl.style.transform = `translateX(${translatePercent}%)`;
+            }
 
-            // Character slight movement mirroring rope tension
-            char1.style.transform = `translateX(${offsetPercent * 0.5}px)`;
-            char2.style.transform = `translateX(${offsetPercent * 0.5}px)`;
+            // Character slight movement responding to rope
+            if (chars1 && chars2) {
+                chars1.style.transform = `translateX(${translatePercent * 0.5}px)`;
+                chars2.style.transform = `translateX(${translatePercent * 0.5}px)`;
+            }
 
-            // Update Arena Indicator Status
-            const indicator = document.getElementById('arena-status-indicator');
-            if (gameState.ropePosition < -15) {
-                indicator.innerHTML = `🔵 ${team1State.name.toUpperCase()} UNGGUL TARIKAN! (${gameState.ropePosition})`;
-                indicator.className = "bg-blue-600 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-white/40 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide animate-pulse";
-            } else if (gameState.ropePosition > 15) {
-                indicator.innerHTML = `RED ${team2State.name.toUpperCase()} UNGGUL TARIKAN! (+${gameState.ropePosition})`;
-                indicator.className = "bg-red-600 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-white/40 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide animate-pulse";
-            } else {
-                indicator.innerHTML = `⚖️ TALI SEIMBANG DI TENGAH (${gameState.ropePosition})`;
-                indicator.className = "bg-slate-900/80 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-white/30 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide";
+            // Update status indicator text
+            if (indicatorEl) {
+                if (gameState.ropePosition < -15) {
+                    indicatorEl.innerHTML = `🔵 ${team1State.name.toUpperCase()} UNGGUL! (POSISI: ${Math.round(gameState.ropePosition)})`;
+                    indicatorEl.className = "bg-blue-900/90 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-blue-400 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide";
+                } else if (gameState.ropePosition > 15) {
+                    indicatorEl.innerHTML = `🔴 ${team2State.name.toUpperCase()} UNGGUL! (POSISI: ${Math.round(gameState.ropePosition)})`;
+                    indicatorEl.className = "bg-red-900/90 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-red-400 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide";
+                } else {
+                    indicatorEl.innerHTML = `⚖️ SEIMBANG! (POSISI: ${Math.round(gameState.ropePosition)})`;
+                    indicatorEl.className = "bg-slate-900/85 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-white/30 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide";
+                }
             }
         }
 
-        function triggerArenaEffects(team) {
-            const prefix = team === 'team1' ? '1' : '2';
-            const dust = document.getElementById(`effect-dust-${prefix}`);
-            dust.style.opacity = '1';
-            setTimeout(() => {
-                dust.style.opacity = '0';
-            }, 600);
-        }
-
         /* ==========================================
-           UI UPDATES & MATCH POINT / VICTORY
+           UPDATE UI SCORES & PROGRESS
            ========================================== */
         function updateUI() {
-            // Scores
             document.getElementById('score-team1').innerText = team1State.score;
             document.getElementById('score-team2').innerText = team2State.score;
 
-            // Progress bars (Target 10)
+            // Progress bars (max 10)
             const p1 = Math.min(100, (team1State.score / 10) * 100);
             const p2 = Math.min(100, (team2State.score / 10) * 100);
             document.getElementById('bar-team1').style.width = `${p1}%`;
             document.getElementById('bar-team2').style.width = `${p2}%`;
 
-            // Combos
+            // Combo Badges
             const badge1 = document.getElementById('combo-badge-1');
             if (team1State.combo >= 2) {
-                badge1.innerText = team1State.combo >= 5 ? '🔥 SUPER COMBO!' : `🔥 COMBO x${team1State.combo}`;
                 badge1.classList.remove('hidden');
+                badge1.innerText = team1State.combo >= 5 ? '🔥 SUPER COMBO!' : `🔥 COMBO x${team1State.combo}`;
             } else {
                 badge1.classList.add('hidden');
             }
 
             const badge2 = document.getElementById('combo-badge-2');
             if (team2State.combo >= 2) {
-                badge2.innerText = team2State.combo >= 5 ? '🔥 SUPER COMBO!' : `🔥 COMBO x${team2State.combo}`;
                 badge2.classList.remove('hidden');
+                badge2.innerText = team2State.combo >= 5 ? '🔥 SUPER COMBO!' : `🔥 COMBO x${team2State.combo}`;
             } else {
                 badge2.classList.add('hidden');
             }
@@ -1016,40 +1059,28 @@
 
         function checkMatchPointOrVictory() {
             const mpBanner = document.getElementById('match-point-banner');
-
-            if (team1State.score >= 10 || team2State.score >= 10) {
-                triggerVictory(team1State.score >= 10 ? 'team1' : 'team2');
-                return;
-            }
-
             if (team1State.score === 9 || team2State.score === 9) {
-                playSound('matchpoint');
                 mpBanner.classList.remove('hidden');
                 mpBanner.classList.add('pulse-match');
+                playSound('matchpoint');
             } else {
                 mpBanner.classList.add('hidden');
+                mpBanner.classList.remove('pulse-match');
             }
         }
 
-        function triggerVictory(winningTeam) {
+        function triggerVictory(winningTeamKey) {
             gameState.status = 'victory';
             stopAllTimers();
             playSound('victory');
 
-            const tName = winningTeam === 'team1' ? team1State.name : team2State.name;
-            const tAvatar = winningTeam === 'team1' ? team1State.avatar : team2State.avatar;
+            const wName = winningTeamKey === 'team1' ? team1State.name : team2State.name;
+            const wAvatar = winningTeamKey === 'team1' ? team1State.avatar : team2State.avatar;
 
-            document.getElementById('victory-title').innerText = "🏆 VICTORY!";
-            document.getElementById('victory-subtitle').innerText = `${tAvatar} ${tName.toUpperCase()} MENANG!`;
-            document.getElementById('victory-desc').innerText = `Berhasil menarik tali dan mencapai 10 jawaban benar lebih dulu dalam Eco Battle IPAS Kelas 5!`;
-
+            document.getElementById('victory-subtitle').innerText = `${wAvatar} ${wName.toUpperCase()} MENANG!`;
+            document.getElementById('victory-desc').innerText = `Berhasil mencapai 10 jawaban benar lebih dulu dalam Eco Battle!`;
             document.getElementById('modal-victory').classList.remove('hidden');
         }
-
-        // Initialize display on window load
-        window.onload = function() {
-            console.log("Tarik Tambang IPAS — Eco Battle initialized for PID 1920x1080.");
-        };
     </script>
 </body>
 </html>
