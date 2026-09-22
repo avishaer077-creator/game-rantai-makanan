@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TARIK TAMBANG IPAS — ECO BATTLE KELAS 5 SD</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', 'Inter', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow: hidden;
+            background: #0f172a;
+            touch-action: manipulation;
+        }
+
+        .arcade-shadow {
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .text-stroke {
+            text-shadow: 2px 2px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000, 0px 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .glow-blue {
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+        }
+
+        .glow-red {
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
+        }
+
+        @keyframes ropeSway {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-3px) rotate(0.2deg); }
+        }
+
+        .rope-sway {
+            animation: ropeSway 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .pulse-match {
+            animation: pulseGlow 0.8s ease-in-out infinite;
+        }
+
+        /* Custom scrollbar just in case */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="w-screen h-screen m-0 p-0 overflow-hidden flex flex-col bg-gradient-to-b from-sky-400 via-emerald-500 to-teal-700">
+
+    <div id="app" class="w-full h-full relative flex flex-col overflow-hidden">
+
+        <!-- 1. MAIN MENU SCREEN -->
+        <div id="screen-menu" class="absolute inset-0 z-50 flex flex-col items-center justify-between p-6 bg-cover bg-center bg-blend-overlay bg-slate-900/40">
+            <!-- Background Decorative Elements -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+                <div class="absolute top-10 left-10 text-6xl animate-bounce">🌱</div>
+                <div class="absolute top-20 right-20 text-6xl animate-pulse">☀️</div>
+                <div class="absolute bottom-10 left-1/4 text-6xl animate-bounce" style="animation-delay: 0.5s;">🍄</div>
+                <div class="absolute bottom-20 right-1/4 text-6xl animate-pulse" style="animation-delay: 1s;">🦋</div>
+            </div>
+
+            <!-- Top Header & Sound/Fullscreen Controls -->
+            <div class="w-full max-w-6xl flex justify-between items-center z-10">
+                <div class="flex items-center space-x-3 bg-white/20 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/30 text-white font-bold">
+                    <span class="text-2xl">🏫</span>
+                    <span class="text-lg tracking-wide">SDN INDONESIA • KELAS 5 IPAS</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button id="btn-sound" onclick="toggleSound()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-2xl border border-white/30 font-bold backdrop-blur-md transition transform active:scale-95 flex items-center space-x-2 text-lg">
+                        <span id="sound-icon">🔊</span> <span id="sound-text">SOUND ON</span>
+                    </button>
+                    <button id="btn-fullscreen" onclick="toggleFullscreen()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-2xl border border-white/30 font-bold backdrop-blur-md transition transform active:scale-95 flex items-center space-x-2 text-lg">
+                        <span>⛶</span> <span>FULLSCREEN</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Center Arcade Title Banner -->
+            <div class="flex flex-col items-center text-center z-10 my-auto">
+                <div class="inline-block bg-amber-400 text-amber-950 px-6 py-2 rounded-full font-extrabold text-xl md:text-2xl mb-4 arcade-shadow uppercase tracking-wider animate-bounce">
+                    🎮 ARCADE EDUKASI INTERAKTIF PID
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold text-white text-stroke tracking-tight mb-3">
+                    TARIK TAMBANG IPAS
+                </h1>
+                <div class="text-3xl md:text-5xl font-black text-emerald-300 text-stroke tracking-wider mb-6">
+                    🌿 ECO BATTLE • KELAS 5 SD
+                </div>
+                <p class="text-white/90 text-lg md:text-xl font-semibold max-w-2xl bg-black/30 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/10 mb-8">
+                    "Jawab Soal. Kumpulkan Power. Tarik Tali. Jadilah Juara!"
+                </p>
+
+                <!-- Menu Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                    <button onclick="goToSetup()" class="bg-gradient-to-r from-emerald-400 to-green-600 hover:from-emerald-300 hover:to-green-500 text-white font-extrabold text-2xl md:text-3xl px-12 py-5 rounded-3xl arcade-shadow border-4 border-white transform hover:scale-105 active:scale-95 transition flex items-center space-x-3">
+                        <span>▶️</span>
+                        <span>MULAI GAME</span>
+                    </button>
+                    <button onclick="openHowToPlay()" class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-extrabold text-xl md:text-2xl px-8 py-5 rounded-3xl arcade-shadow border-4 border-white transform hover:scale-105 active:scale-95 transition flex items-center space-x-3">
+                        <span>📖</span>
+                        <span>CARA BERMAIN</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Info -->
+            <div class="text-white/80 font-medium text-sm z-10 bg-black/20 px-6 py-2 rounded-xl backdrop-blur-sm">
+                Didesain khusus untuk Layar Sentuh PID (1920x1080) • Multi-Touch Serentak 2 Tim
+            </div>
+        </div>
+
+        <!-- 2. HOW TO PLAY MODAL -->
+        <div id="modal-howto" class="absolute inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-6">
+            <div class="bg-white rounded-3xl max-w-3xl w-full p-8 text-slate-800 arcade-shadow border-8 border-emerald-500 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-extrabold text-emerald-700 flex items-center space-x-3">
+                        <span>📖</span> <span>CARA BERMAIN ECO BATTLE</span>
+                    </h2>
+                    <button onclick="closeHowToPlay()" class="bg-slate-200 hover:bg-slate-300 w-12 h-12 rounded-full font-bold text-2xl flex items-center justify-center transition">✕</button>
+                </div>
+                <div class="space-y-4 text-lg text-slate-600 leading-relaxed">
+                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+                        <strong class="text-emerald-800">1. Tanpa Sistem Giliran:</strong> Tim 1 (Biru) dan Tim 2 (Merah) menjawab soal IPAS Kelas 5 secara bersamaan dan independen di panel masing-masing!
+                    </div>
+                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+                        <strong class="text-emerald-800">2. Tarik Tambang Fisik Nyata:</strong> Setiap jawaban <span class="text-green-600 font-bold">BENAR</span> menarik tali secara visual ke arah tim tersebut dengan animasi debu, energi, dan tarikan karakter.
+                    </div>
+                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+                        <strong class="text-emerald-800">3. Combo & Power:</strong> Jawab benar berturut-turut untuk mengaktifkan Combo (x2, x3, Super Combo) yang membuat tarikan tali semakin kuat!
+                    </div>
+                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+                        <strong class="text-emerald-800">4. Target Kemenangan:</strong> Tim yang pertama kali mencapai <span class="text-blue-600 font-bold">10 JAWABAN BENAR</span> dinyatakan sebagai pemenang ECO BATTLE!
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                        <strong class="text-amber-800">⚠️ Perhatian Timer:</strong> Setiap soal memiliki waktu 20 detik. Jika habis, dihitung salah dan combo direset!
+                    </div>
+                </div>
+                <div class="mt-8 text-center">
+                    <button onclick="closeHowToPlay()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xl px-10 py-4 rounded-2xl arcade-shadow transition">
+                        MENGERTI, AYO MAIN!
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. TEAM SETUP SCREEN -->
+        <div id="screen-setup" class="absolute inset-0 z-45 bg-slate-900/90 backdrop-blur-md hidden flex flex-col items-center justify-center p-6 overflow-y-auto">
+            <div class="max-w-5xl w-full bg-slate-800 rounded-3xl p-8 arcade-shadow border-4 border-emerald-500 flex flex-col space-y-6">
+                <div class="text-center">
+                    <div class="text-amber-400 font-extrabold text-xl uppercase tracking-wider mb-2">🔥 SIAP UNTUK ECO BATTLE? 🔥</div>
+                    <h2 class="text-4xl font-extrabold text-white">PILIH NAMA & AVATAR TIM</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Team 1 Setup (Blue) -->
+                    <div class="bg-blue-950/60 border-4 border-blue-500 rounded-3xl p-6 flex flex-col space-y-4 glow-blue">
+                        <div class="flex items-center space-x-3 text-blue-300 font-extrabold text-2xl">
+                            <span class="text-3xl">🔵</span> <span>TIM 1 (KIRI)</span>
+                        </div>
+                        <div>
+                            <label class="block text-white/80 font-bold mb-2">Nama Tim 1:</label>
+                            <input type="text" id="input-team1-name" value="Tim Rimba" class="w-full bg-blue-900/50 border-2 border-blue-400 rounded-2xl px-4 py-3 text-white font-bold text-xl focus:outline-none focus:border-white">
+                        </div>
+                        <div>
+                            <label class="block text-white/80 font-bold mb-2">Pilih Avatar:</label>
+                            <div class="grid grid-cols-5 gap-2" id="avatars-team1">
+                                <button onclick="selectAvatar('team1', '👦')" class="avatar-btn-1 bg-blue-800 hover:bg-blue-700 border-2 border-blue-400 text-3xl p-3 rounded-2xl transition active:scale-95 selected">👦</button>
+                                <button onclick="selectAvatar('team1', '👧')" class="avatar-btn-1 bg-blue-800 hover:bg-blue-700 border-2 border-transparent text-3xl p-3 rounded-2xl transition active:scale-95">👧</button>
+                                <button onclick="selectAvatar('team1', '🧑‍🎓')" class="avatar-btn-1 bg-blue-800 hover:bg-blue-700 border-2 border-transparent text-3xl p-3 rounded-2xl transition active:scale-95">🧑‍🎓</button>
+                                <button onclick="selectAvatar('team1', '👨‍🔬')" class="avatar-btn-1 bg-blue-800 hover:bg-blue-700 border-2 border-transparent text-3xl p-3 rounded-2xl transition active:scale-95">👨‍🔬</button>
+                                <button onclick="selectAvatar('team1', '👩‍🔬')" class="avatar-btn-1 bg-blue-800 hover:bg-blue-700 border-2 border-transparent text-3xl p-3 rounded-2xl transition active:scale-95">👩‍🔬</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Team 2 Setup (Red) -->
+                    <div class="bg-red-950/60 border-4 border-red-500 rounded-3xl p-6 flex flex-col space-y-4 glow-red">
+                        <div class="flex items-center space-x-3 text-red-300 font-extrabold text-2xl">
+                            <span class="text-3xl">🔴</span> <span>TIM 2 (KANAN)</span>
+                        </div>
+                        <div>
+                            <label class="block text-white/80 font-bold mb-2">Nama Tim 2:</label>
+                            <input type="text" id="input-team2-name" value="Tim Flora" class="w-full bg-red-900/50 border-2 border-red-400 rounded-2xl px-4 py-3 text-white font-bold text-xl focus:outline-none focus:border-white">
+                        </div>
+                        <div>
+                            <label class="block text-white/80 font-bold mb-2">Pilih Avatar:</label>
+                            <div class="grid grid-cols-5 gap-2" id="avatars-team2">
+                                <button onclick="selectAvatar('team2', '👦')" class="avatar-btn-2 bg-red-900 hover:bg-red-800 border-2 border-transparent text-3xl p-3 rounded-2xl transition active:scale-95">👦</button>
+                                <button onclick="selectAvatar('team2', '👧')" class="avatar-btn-2 bg-red-900 hover:bg-red-800 border-2 border-red-400 text-3xl p-3 rounded-2xl transition active:scale-95 selected">👧</button>
+                                <button onclick="selectAvatar('team2', '🧑‍🎓')" class="avatar-btn-2 bg-red-900 hover:bg-red-800 border-2 border-transparent text-3xl p-3 rounded-2xl transition active:scale-95">🧑‍🎓</button>
+                                <button onclick="selectAvatar('team2', '👨‍🔬')" class="avatar-btn-2 bg-red-900 hover:bg-red-800 border-2 border-transparent text-3xl p-3 rounded-2xl transition active:scale-95">👨‍🔬</button>
+                                <button onclick="selectAvatar('team2', '👩‍🔬')" class="avatar-btn-2 bg-red-900 hover:bg-red-800 border-2 border-transparent text-3xl p-3 rounded-2xl transition active:scale-95">👩‍🔬</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-4">
+                    <button onclick="goToMenu()" class="bg-slate-700 hover:bg-slate-600 text-white font-extrabold px-8 py-4 rounded-2xl text-xl transition">
+                        ⬅️ KEMBALI
+                    </button>
+                    <button onclick="startBattle()" class="bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black px-12 py-4 rounded-2xl text-2xl arcade-shadow border-4 border-white transition transform hover:scale-105">
+                        ⚡ MULAI PERTANDINGAN ⚡
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. GAMEPLAY SCREEN -->
+        <div id="screen-game" class="absolute inset-0 z-30 flex flex-col hidden bg-slate-900 overflow-hidden">
+            
+            <!-- TOP BAR: Scores, Progress, and Match Point Banner -->
+            <div class="w-full bg-slate-950/90 border-b-4 border-emerald-500/50 px-6 py-3 flex justify-between items-center z-20 shadow-lg">
+                <!-- Team 1 Score Info -->
+                <div class="flex items-center space-x-4 bg-blue-950/80 border-2 border-blue-500 px-5 py-2 rounded-2xl glow-blue">
+                    <span id="display-team1-avatar" class="text-3xl">👦</span>
+                    <div>
+                        <div id="display-team1-name" class="text-blue-300 font-extrabold text-lg">TIM RIMBA</div>
+                        <div class="text-white font-bold text-sm">BENAR: <span id="score-team1" class="text-emerald-400 text-xl font-black">0</span> / 10</div>
+                    </div>
+                    <div class="hidden sm:block w-32 bg-slate-800 h-4 rounded-full overflow-hidden border border-blue-400/50">
+                        <div id="bar-team1" class="bg-blue-500 h-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Center Match Point / Game Status -->
+                <div class="flex flex-col items-center">
+                    <button onclick="pauseGame()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded-xl border border-white/20 font-bold text-sm mb-1 transition">
+                        ⏸ PAUSE
+                    </button>
+                    <div id="match-point-banner" class="hidden bg-amber-500 text-slate-950 font-black px-4 py-1 rounded-xl text-sm animate-bounce arcade-shadow">
+                        🔥 MATCH POINT! 🔥
+                    </div>
+                </div>
+
+                <!-- Team 2 Score Info -->
+                <div class="flex items-center space-x-4 bg-red-950/80 border-2 border-red-500 px-5 py-2 rounded-2xl glow-red">
+                    <div class="hidden sm:block w-32 bg-slate-800 h-4 rounded-full overflow-hidden border border-red-400/50 flex justify-end">
+                        <div id="bar-team2" class="bg-red-500 h-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <div class="text-right">
+                        <div id="display-team2-name" class="text-red-300 font-extrabold text-lg">TIM FLORA</div>
+                        <div class="text-white font-bold text-sm">BENAR: <span id="score-team2" class="text-emerald-400 text-xl font-black">0</span> / 10</div>
+                    </div>
+                    <span id="display-team2-avatar" class="text-3xl">👧</span>
+                </div>
+            </div>
+
+            <!-- TUG OF WAR VISUAL ARENA (Top Half) -->
+            <div id="arena-container" class="w-full h-48 md:h-56 bg-gradient-to-b from-sky-400 via-emerald-400 to-emerald-600 relative overflow-hidden flex flex-col justify-between p-4 border-b-4 border-emerald-800 shadow-inner">
+                <!-- Ecosystem Background Decorations -->
+                <div class="absolute inset-0 pointer-events-none opacity-25 flex justify-between items-center px-10 text-4xl">
+                    <span>🌳</span><span>☀️</span><span>🌿</span><span>☁️</span><span>🍄</span><span>🦋</span><span>🌱</span>
+                </div>
+
+                <!-- Arena Indicator Banner -->
+                <div class="flex justify-center z-10">
+                    <div id="arena-status-indicator" class="bg-slate-900/80 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-white/30 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide">
+                        ⚖️ SEIMBANG! (POSISI: 0)
+                    </div>
+                </div>
+
+                <!-- Interactive Tug of War Rope Graphic -->
+                <div class="relative w-full h-16 flex items-center justify-center my-auto">
+                    <!-- Ground/Mud line -->
+                    <div class="absolute bottom-0 w-full h-3 bg-emerald-900/40 rounded-full"></div>
+
+                    <!-- Team 1 Characters (Left Side) -->
+                    <div id="chars-team1" class="absolute left-10 md:left-20 flex items-center space-x-2 transition-transform duration-300 z-10">
+                        <div class="text-5xl md:text-6xl filter drop-shadow-lg transform -scale-x-100" id="avatar-char-1">👦</div>
+                        <div class="text-3xl filter drop-shadow-lg" style="margin-left: -10px;">🧑‍🎓</div>
+                        <div id="effect-dust-1" class="absolute -bottom-2 -left-6 text-2xl opacity-0 transition-opacity">💨</div>
+                    </div>
+
+                    <!-- Team 2 Characters (Right Side) -->
+                    <div id="chars-team2" class="absolute right-10 md:right-20 flex items-center space-x-2 transition-transform duration-300 z-10">
+                        <div class="text-3xl filter drop-shadow-lg" style="margin-right: -10px;">🧑‍🎓</div>
+                        <div class="text-5xl md:text-6xl filter drop-shadow-lg" id="avatar-char-2">👧</div>
+                        <div id="effect-dust-2" class="absolute -bottom-2 -right-6 text-2xl opacity-0 transition-opacity">💨</div>
+                    </div>
+
+                    <!-- The Rope Line with Center Ribbon -->
+                    <div class="w-3/4 max-w-4xl h-3 bg-amber-700 rounded-full relative rope-sway shadow-lg border border-amber-900 transition-all duration-300" id="rope-element">
+                        <!-- Rope Texture lines -->
+                        <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,#b45309,#b45309_10px,#d97706_10px,#d97706_20px)] opacity-80 rounded-full"></div>
+                        
+                        <!-- Center Knot / Red Ribbon -->
+                        <div id="rope-knot" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-red-600 rounded-full border-2 border-white shadow-xl flex items-center justify-center text-xs font-black text-white transition-all duration-300">
+                            🪢
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arena Zone Labels at Bottom -->
+                <div class="w-full flex justify-between text-white/90 font-bold text-xs md:text-sm px-4 z-10">
+                    <span class="bg-blue-900/60 px-3 py-1 rounded-xl border border-blue-400/30">🔵 ZONA TIM 1</span>
+                    <span class="bg-slate-900/60 px-3 py-1 rounded-xl border border-white/20">CENTER ⚖️</span>
+                    <span class="bg-red-900/60 px-3 py-1 rounded-xl border border-red-400/30">ZONA TIM 2 🔴</span>
+                </div>
+            </div>
+
+            <!-- SPLIT QUESTION PANELS (Bottom Half) -->
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-900 overflow-y-auto">
+                
+                <!-- TEAM 1 PANEL (LEFT) -->
+                <div id="panel-team1" class="bg-blue-950/40 border-4 border-blue-600/80 rounded-3xl p-5 flex flex-col justify-between arcade-shadow relative backdrop-blur-sm">
+                    <!-- Top Team 1 Panel Header -->
+                    <div class="flex justify-between items-center mb-3 border-b border-blue-500/30 pb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl" id="panel-avatar-1">👦</span>
+                            <span id="panel-name-1" class="text-blue-300 font-extrabold text-xl">TIM RIMBA</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span id="combo-badge-1" class="hidden bg-amber-500 text-slate-950 font-black px-3 py-1 rounded-xl text-xs uppercase animate-pulse">🔥 COMBO x2</span>
+                            <div class="bg-blue-900/80 border border-blue-400 text-white font-black px-4 py-1.5 rounded-xl text-lg flex items-center space-x-1">
+                                <span>⏱️</span> <span id="timer-team1">20</span>s
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Container Team 1 -->
+                    <div class="flex-1 flex flex-col justify-center my-2">
+                        <div id="q-category-1" class="inline-block bg-blue-600/50 text-blue-200 font-bold px-3 py-1 rounded-lg text-xs w-max mb-2">
+                            🌿 Ekosistem & Komponen
+                        </div>
+                        <h3 id="q-text-1" class="text-white font-extrabold text-lg md:text-xl leading-snug mb-4">
+                            Memuat soal IPAS Kelas 5...
+                        </h3>
+
+                        <!-- Options Grid Team 1 -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="options-container-1">
+                            <!-- Options generated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Feedback Overlay Team 1 -->
+                    <div id="feedback-team1" class="absolute inset-0 bg-slate-950/90 rounded-2xl hidden flex flex-col items-center justify-center p-6 text-center z-10 backdrop-blur-md">
+                        <div id="feedback-icon-1" class="text-6xl mb-2">🎉</div>
+                        <h4 id="feedback-title-1" class="text-2xl font-black text-white mb-2">BENAR!</h4>
+                        <p id="feedback-desc-1" class="text-white/90 text-sm md:text-base mb-4">Penjelasan singkat materi...</p>
+                        <div class="text-amber-400 font-bold text-sm">Memuat soal berikutnya...</div>
+                    </div>
+                </div>
+
+                <!-- TEAM 2 PANEL (RIGHT) -->
+                <div id="panel-team2" class="bg-red-950/40 border-4 border-red-600/80 rounded-3xl p-5 flex flex-col justify-between arcade-shadow relative backdrop-blur-sm">
+                    <!-- Top Team 2 Panel Header -->
+                    <div class="flex justify-between items-center mb-3 border-b border-red-500/30 pb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl" id="panel-avatar-2">👧</span>
+                            <span id="panel-name-2" class="text-red-300 font-extrabold text-xl">TIM FLORA</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span id="combo-badge-2" class="hidden bg-amber-500 text-slate-950 font-black px-3 py-1 rounded-xl text-xs uppercase animate-pulse">🔥 COMBO x2</span>
+                            <div class="bg-red-900/80 border border-red-400 text-white font-black px-4 py-1.5 rounded-xl text-lg flex items-center space-x-1">
+                                <span>⏱️</span> <span id="timer-team2">20</span>s
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Container Team 2 -->
+                    <div class="flex-1 flex flex-col justify-center my-2">
+                        <div id="q-category-2" class="inline-block bg-red-600/50 text-red-200 font-bold px-3 py-1 rounded-lg text-xs w-max mb-2">
+                            🌿 Rantai Makanan
+                        </div>
+                        <h3 id="q-text-2" class="text-white font-extrabold text-lg md:text-xl leading-snug mb-4">
+                            Memuat soal IPAS Kelas 5...
+                        </h3>
+
+                        <!-- Options Grid Team 2 -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="options-container-2">
+                            <!-- Options generated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Feedback Overlay Team 2 -->
+                    <div id="feedback-team2" class="absolute inset-0 bg-slate-950/90 rounded-2xl hidden flex flex-col items-center justify-center p-6 text-center z-10 backdrop-blur-md">
+                        <div id="feedback-icon-2" class="text-6xl mb-2">🎉</div>
+                        <h4 id="feedback-title-2" class="text-2xl font-black text-white mb-2">BENAR!</h4>
+                        <p id="feedback-desc-2" class="text-white/90 text-sm md:text-base mb-4">Penjelasan singkat materi...</p>
+                        <div class="text-amber-400 font-bold text-sm">Memuat soal berikutnya...</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 5. VICTORY / GAME OVER MODAL -->
+        <div id="modal-victory" class="absolute inset-0 z-60 bg-black/85 backdrop-blur-lg hidden flex flex-col items-center justify-center p-6 text-center">
+            <div class="max-w-2xl w-full bg-slate-800 rounded-3xl p-8 arcade-shadow border-8 border-amber-400 flex flex-col items-center space-y-6">
+                <div class="text-6xl animate-bounce">🏆</div>
+                <h2 id="victory-title" class="text-5xl font-black text-amber-400 text-stroke">VICTORY!</h2>
+                <div id="victory-subtitle" class="text-3xl font-extrabold text-white">TIM RIMBA MENANG!</div>
+                <p id="victory-desc" class="text-white/80 text-lg">Berhasil mencapai 10 jawaban benar lebih dulu dalam Eco Battle!</p>
+                
+                <div class="flex space-x-4 pt-4">
+                    <button onclick="resetGameAndRestart()" class="bg-gradient-to-r from-emerald-400 to-green-600 hover:from-emerald-300 hover:to-green-500 text-white font-extrabold text-2xl px-10 py-4 rounded-2xl arcade-shadow border-4 border-white transition transform hover:scale-105">
+                        🔄 MAIN LAGI
+                    </button>
+                    <button onclick="goToMenu()" class="bg-slate-700 hover:bg-slate-600 text-white font-extrabold text-xl px-8 py-4 rounded-2xl transition">
+                        🏠 MENU UTAMA
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. PAUSE MODAL -->
+        <div id="modal-pause" class="absolute inset-0 z-60 bg-black/80 backdrop-blur-md hidden flex flex-col items-center justify-center p-6 text-center">
+            <div class="max-w-md w-full bg-slate-800 rounded-3xl p-8 arcade-shadow border-4 border-white flex flex-col items-center space-y-6">
+                <h2 class="text-4xl font-extrabold text-white">GAME DI-PAUSE</h2>
+                <div class="flex flex-col space-y-3 w-full">
+                    <button onclick="resumeGame()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xl py-4 rounded-2xl arcade-shadow transition">
+                        ▶️ LANJUTKAN
+                    </button>
+                    <button onclick="resetGameAndRestart()" class="bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xl py-4 rounded-2xl arcade-shadow transition">
+                        🔄 ULANGI PERTANDINGAN
+                    </button>
+                    <button onclick="goToMenu()" class="bg-slate-700 hover:bg-slate-600 text-white font-extrabold text-xl py-4 rounded-2xl transition">
+                        🏠 KELUAR KE MENU
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* ==========================================
+           WEB AUDIO API SOUND SYNTHESIZER
+           ========================================== */
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                    osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    osc.start(now);
+                    osc.stop(now + 0.5);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(150, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'pull') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(120, now);
+                    osc.frequency.linearRampToValueAtTime(80, now + 0.25);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'combo') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.setValueAtTime(880, now + 0.1);
+                    osc.frequency.setValueAtTime(1320, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'matchpoint') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.linearRampToValueAtTime(600, now + 0.3);
+                    osc.frequency.linearRampToValueAtTime(300, now + 0.6);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+                    osc.start(now);
+                    osc.stop(now + 0.7);
+                } else if (type === 'victory') {
+                    osc.type = 'sine';
+                    const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.setValueAtTime(freq, now + idx * 0.15);
+                        g.gain.setValueAtTime(0.2, now + idx * 0.15);
+                        g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.15 + 0.2);
+                        o.start(now + idx * 0.15);
+                        o.stop(now + idx * 0.15 + 0.2);
+                    });
+                } else if (type === 'warning') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                }
+            } catch (e) {
+                console.log("Audio not initialized yet.");
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-icon').innerText = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('sound-text').innerText = soundEnabled ? 'SOUND ON' : 'SOUND OFF';
+            playSound('click');
+        }
+
+        function toggleFullscreen() {
+            playSound('click');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log("Error attempting to enable fullscreen:", err);
+                });
+                document.getElementById('btn-fullscreen').innerHTML = '<span>⛶</span> <span>EXIT FULLSCREEN</span>';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+                document.getElementById('btn-fullscreen').innerHTML = '<span>⛶</span> <span>FULLSCREEN</span>';
+            }
+        }
+
+        /* ==========================================
+           IPAS 5th GRADE QUESTION BANK (40+ ROBUST ITEMS)
+           ========================================== */
+        const ipasQuestions = [
+            { cat: "🌳 Ekosistem", q: "Apa yang dimaksud dengan ekosistem?", opts: ["Hubungan timbal balik antara makhluk hidup dan lingkungannya", "Kumpulan hewan buas di hutan", "Cuaca panas di siang hari", "Tanaman hias di dalam pot"], ans: 0, exp: "Ekosistem adalah interaksi antara komponen biotik dan abiotik di suatu lingkungan." },
+            { cat: "🌱 Komponen Biotik", q: "Berikut ini yang termasuk komponen biotik dalam ekosistem adalah...", opts: ["Batu dan tanah", "Air dan udara", "Cahaya matahari", "Tumbuhan dan hewan"], ans: 3, exp: "Komponen biotik adalah semua makhluk hidup seperti tumbuhan, hewan, dan mikroorganisme." },
+            { cat: "☀️ Komponen Abiotik", q: "Manakah yang merupakan contoh komponen abiotik?", opts: ["Rumput hijau", "Kelinci hutan", "Cahaya matahari", "Burung pipit"], ans: 2, exp: "Komponen abiotik adalah benda tak hidup seperti air, tanah, udara, dan cahaya matahari." },
+            { cat: "🍚 Produsen", q: "Dalam rantai makanan, tumbuhan hijau bertindak sebagai...", opts: ["Produsen", "Konsumen I", "Konsumen II", "Pengurai"], ans: 0, exp: "Tumbuhan hijau dapat membuat makanan sendiri melalui fotosintesis sehingga disebut produsen." },
+            { cat: "🐭 Konsumen I", q: "Hewan pemakan tumbuhan (herbivora) dalam rantai makanan biasanya menduduki tingkat sebagai...", opts: ["Produsen", "Konsumen tingkat I", "Konsumen tingkat III", "Pengurai"], ans: 1, exp: "Herbivora memakan produsen langsung, sehingga disebut konsumen tingkat I." },
+            { cat: "🐍 Konsumen II", q: "Ular yang memakan tikus di sawah berperan sebagai...", opts: ["Produsen", "Konsumen tingkat I", "Konsumen tingkat II", "Pengurai"], ans: 2, exp: "Karnivora pemakan konsumen I disebut sebagai konsumen tingkat II." },
+            { cat: "🦅 Konsumen III", q: "Elang yang memangsa ular di padang rumput bertindak sebagai...", opts: ["Produsen", "Konsumen tingkat I", "Konsumen tingkat II atau III", "Benda abiotik"], ans: 2, exp: "Elang berada pada puncak rantai makanan sebagai konsumen tingkat tinggi." },
+            { cat: "🍄 Pengurai", q: "Jamur dan bakteri di dalam tanah berfungsi sebagai...", opts: ["Produsen makanan", "Konsumen utama", "Pengurai (dekomposer)", "Pembuat racun"], ans: 2, exp: "Pengurai menguraikan sisa makhluk hidup yang mati menjadi zat hara tanah." },
+            { cat: "🔗 Rantai Makanan", q: "Urutan peristiwa makan dan dimakan dengan arah tertentu disebut...", opts: ["Jaring-jaring makanan", "Rantai makanan", "Siklus air", "Piramida ekonomi"], ans: 1, exp: "Rantai makanan adalah jalur perpindahan energi makanan antar makhluk hidup." },
+            { cat: "🕸️ Jaring-jaring Makanan", q: "Kumpulan dari beberapa rantai makanan yang saling berhubungan disebut...", opts: ["Rantai makanan tunggal", "Jaring-jaring makanan", "Ekosistem buatan", "Habitat hewan"], ans: 1, exp: "Jaring-jaring makanan terdiri dari banyak rantai makanan yang saling terikat dalam ekosistem." },
+            { cat: "⚡ Aliran Energi", q: "Sumber energi utama bagi seluruh ekosistem di bumi adalah...", opts: ["Api unggun", "Matahari", "Batu bara", "Listrik PLN"], ans: 1, exp: "Matahari adalah sumber energi utama yang dimanfaatkan tumbuhan untuk fotosintesis." },
+            { cat: "⚖️ Keseimbangan Ekosistem", q: "Apa yang terjadi jika seluruh populasi ular di sawah diburu manusia?", opts: ["Padi semakin subur", "Jumlah tikus akan meledak merusak padi", "Air sungai menjadi jernih", "Tidak ada perubahan"], ans: 1, exp: "Hilangnya pemangsa (ular) membuat hama tikus berkembang biak tanpa kendali." },
+            { cat: "🌿 Hubungan Antarorganisme", q: "Hubungan antara lebah dan bunga mawar adalah contoh simbiosis...", opts: ["Parasitisme", "Komensalisme", "Mutualisme", "Amensalisme"], ans: 2, exp: "Simbiosis mutualisme adalah hubungan yang saling menguntungkan kedua belah pihak." },
+            { cat: "🌳 Hutan Hujan", q: "Fungsi utama hutan bagi bumi kita adalah...", opts: ["Menghasilkan oksigen dan menyerap karbon dioksida", "Menyediakan bahan bakar minyak", "Menambah polusi udara", "Membuat suhu bumi panas"], ans: 0, exp: "Hutan dikenal sebagai paru-paru dunia karena menghasilkan oksigen yang penting." },
+            { cat: "🌱 Fotosintesis", q: "Zat yang dihasilkan oleh tumbuhan saat berfotosintesis adalah...", opts: ["Karbon dioksida dan air", "Oksigen dan glukosa (makanan)", "Minyak bumi", "Gas nitrogen murni"], ans: 1, exp: "Fotosintesis menghasilkan oksigen untuk bernapas dan glukosa untuk pertumbuhan tanaman." },
+            { cat: "🍃 Lingkungan", q: "Lingkungan alam terdiri dari komponen...", opts: ["Biotik saja", "Abiotik saja", "Biotik dan abiotik", "Buatan manusia"], ans: 2, exp: "Lingkungan alam mencakup seluruh makhluk hidup (biotik) dan benda tak hidup (abiotik)." },
+            { cat: "🍚 Hubungan Makan", q: "Hewan pemakan daging disebut juga dengan istilah...", opts: ["Herbivora", "Karnivora", "Omnivora", "Insektivora"], ans: 1, exp: "Karnivora adalah kelompok hewan pemakan daging atau hewan lain." },
+            { cat: "🐭 Herbivora", q: "Manakah di bawah ini yang merupakan contoh hewan herbivora?", opts: ["Harimau dan singa", "Kelinci, sapi, dan kambing", "Elang dan ular", "Kucing dan anjing"], ans: 1, exp: "Sapi, kelinci, dan kambing adalah hewan pemakan tumbuhan." },
+            { cat: "🐍 Omnivora", q: "Hewan yang memakan tumbuhan sekaligus daging disebut...", opts: ["Herbivora", "Karnivora", "Omnivora", "Dekomposer"], ans: 2, exp: "Omnivora adalah hewan pemangsa segala (tumbuhan dan daging), contohnya ayam dan beruang." },
+            { cat: "🍄 Dekomposer", q: "Peran utama cacing tanah dalam ekosistem tanah adalah...", opts: ["Memakan padi", "Menyuburkan tanah dan mengurai sampah organik", "Menghasilkan listrik", "Merusak akar tanaman"], ans: 1, exp: "Cacing tanah membantu menggemburkan tanah dan menguraikan sisa organik." },
+            { cat: "🔗 Rantai Makanan Sawah", q: "Di ekosistem sawah: Padi → ... → Ular → Elang. Titik-titik diisi oleh...", opts: ["Katak", "Tikus", "Kerbau", "Kelinci"], ans: 1, exp: "Tikus memakan padi, lalu dimangsa oleh ular." },
+            { cat: "🕸️ Piramida Makanan", q: "Dalam piramida makanan ekosistem, jumlah biomassa terbesar berada pada tingkat...", opts: ["Puncak (Karnivora)", "Konsumen tingkat II", "Produsen (Tumbuhan)", "Pengurai"], ans: 2, exp: "Produsen berada di dasar piramida dengan jumlah dan biomassa paling besar." },
+            { cat: "⚡ Transfer Energi", q: "Persentase energi yang berpindah ke tingkat trofik berikutnya dalam rantai makanan kira-kira sebesar...", opts: ["10%", "50%", "90%", "100%"], ans: 0, exp: "Hanya sekitar 10% energi yang berpindah ke tingkat trofik di atasnya, sisanya hilang sebagai panas." },
+            { cat: "⚖️ Pelestarian Alam", q: "Tindakan manusia yang dapat merusak keseimbangan ekosistem adalah...", opts: ["Melakukan reboisasi", "Penebangan hutan secara liar (ilegal logging)", "Membuat suaka margasatwa", "Membersihkan sampah sungai"], ans: 1, exp: "Penebangan liar merusak habitat asli hewan dan tumbuhan di hutan." },
+            { cat: "🌿 Simbiosis Parasitisme", q: "Hubungan antara benalu dan pohon yang ditumpanginya adalah contoh simbiosis...", opts: ["Mutualisme", "Komensalisme", "Parasitisme", "Netralisme"], ans: 2, exp: "Benalu untung karena mengambil sari makanan, sedangkan pohon dirugikan." },
+            { cat: "🌳 Simbiosis Komensalisme", q: "Anggrek yang menempel pada pohon tinggi adalah contoh simbiosis...", opts: ["Mutualisme", "Komensalisme", "Parasitisme", "Predasi"], ans: 1, exp: "Anggrek mendapat tempat hidup tanpa merugikan pohon yang ditumpanginya." },
+            { cat: "☀️ Adaptasi Tumbuhan", q: "Tumbuhan kaktus di gurun beradaptasi dengan mengubah daunnya menjadi...", opts: ["Lebar dan tipis", "Duri untuk mengurangi penguapan air", "Bunga beraroma wangi", "Buah manis"], ans: 1, exp: "Duri kaktus berfungsi mengurangi penguapan air di daerah panas." },
+            { cat: "💧 Siklus Air", q: "Penguapan air dari permukaan bumi karena panas matahari disebut...", _opts: ["Kondensasi", "Presipitasi", "Evaporasi", "Infiltrasi"], opts: ["Kondensasi", "Presipitasi", "Evaporasi", "Infiltrasi"], ans: 2, exp: "Evaporasi adalah proses perubahan air cair menjadi uap air oleh panas matahari." },
+            { cat: "☁️ Hujan", q: "Proses pembentukan titik-titik air di awan dari pendinginan uap air disebut...", opts: ["Evaporasi", "Kondensasi", "Transpirasi", "Respirasi"], ans: 1, exp: "Kondensasi adalah proses pengubahan uap air menjadi titik-titik air membentuk awan." },
+            { cat: "🌱 Penyerbukan", q: "Perantara alami yang membantu penyerbukan bunga adalah...", opts: ["Batu dan kerikil", "Lebah, kupu-kupu, dan angin", "Air laut", "Plastik sampah"], ans: 1, exp: "Serangga seperti lebah dan kupu-kupu membantu memindahkan serbuk sari bunga." }
+        ];
+
+        /* ==========================================
+           GAME STATE VARIABLES
+           ========================================== */
+        let gameState = {
+            status: 'menu', // 'menu', 'setup', 'playing', 'pause', 'victory'
+            ropePosition: 0, // Range -100 to +100
+            pullStrength: 12,
+            targetScore: 10,
+            winner: null
+        };
+
+        let team1State = {
+            name: "Tim Rimba",
+            avatar: "👦",
+            score: 0,
+            wrong: 0,
+            combo: 0,
+            maxCombo: 0,
+            timer: 20,
+            timerInterval: null,
+            currentQIndex: -1,
+            isLocked: false
+        };
+
+        let team2State = {
+            name: "Tim Flora",
+            avatar: "👧",
+            score: 0,
+            wrong: 0,
+            combo: 0,
+            maxCombo: 0,
+            timer: 20,
+            timerInterval: null,
+            currentQIndex: -1,
+            isLocked: false
+        };
+
+        /* ==========================================
+           NAVIGATION & UI FUNCTIONS
+           ========================================== */
+        function goToMenu() {
+            playSound('click');
+            stopAllTimers();
+            gameState.status = 'menu';
+            document.getElementById('screen-menu').classList.remove('hidden');
+            document.getElementById('screen-setup').classList.add('hidden');
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('modal-howto').classList.add('hidden');
+            document.getElementById('modal-victory').classList.add('hidden');
+            document.getElementById('modal-pause').classList.add('hidden');
+        }
+
+        function openHowToPlay() {
+            playSound('click');
+            document.getElementById('modal-howto').classList.remove('hidden');
+        }
+
+        function closeHowToPlay() {
+            playSound('click');
+            document.getElementById('modal-howto').classList.add('hidden');
+        }
+
+        function goToSetup() {
+            playSound('click');
+            gameState.status = 'setup';
+            document.getElementById('screen-menu').classList.add('hidden');
+            document.getElementById('screen-setup').classList.remove('hidden');
+        }
+
+        function selectAvatar(team, avatarEmoji) {
+            playSound('click');
+            if (team === 'team1') {
+                team1State.avatar = avatarEmoji;
+                const btns = document.querySelectorAll('.avatar-btn-1');
+                btns.forEach(b => {
+                    if (b.innerText === avatarEmoji) {
+                        b.classList.add('border-blue-400', 'selected');
+                        b.classList.remove('border-transparent');
+                    } else {
+                        b.classList.remove('border-blue-400', 'selected');
+                        b.classList.add('border-transparent');
+                    }
+                });
+            } else {
+                team2State.avatar = avatarEmoji;
+                const btns = document.querySelectorAll('.avatar-btn-2');
+                btns.forEach(b => {
+                    if (b.innerText === avatarEmoji) {
+                        b.classList.add('border-red-400', 'selected');
+                        b.classList.remove('border-transparent');
+                    } else {
+                        b.classList.remove('border-red-400', 'selected');
+                        b.classList.add('border-transparent');
+                    }
+                });
+            }
+        }
+
+        function startBattle() {
+            playSound('click');
+            const n1 = document.getElementById('input-team1-name').value.trim();
+            const n2 = document.getElementById('input-team2-name').value.trim();
+            if (n1) team1State.name = n1;
+            if (n2) team2State.name = n2;
+
+            // Reset Game Data
+            team1State.score = 0;
+            team1State.wrong = 0;
+            team1State.combo = 0;
+            team1State.maxCombo = 0;
+            team1State.isLocked = false;
+
+            team2State.score = 0;
+            team2State.wrong = 0;
+            team2State.combo = 0;
+            team2State.maxCombo = 0;
+            team2State.isLocked = false;
+
+            gameState.ropePosition = 0;
+            gameState.winner = null;
+            gameState.status = 'playing';
+
+            // Update UI elements with team names & avatars
+            document.getElementById('display-team1-name').innerText = team1State.name;
+            document.getElementById('display-team2-name').innerText = team2State.name;
+            document.getElementById('display-team1-avatar').innerText = team1State.avatar;
+            document.getElementById('display-team2-avatar').innerText = team2State.avatar;
+            document.getElementById('panel-name-1').innerText = team1State.name;
+            document.getElementById('panel-name-2').innerText = team2State.name;
+            document.getElementById('panel-avatar-1').innerText = team1State.avatar;
+            document.getElementById('panel-avatar-2').innerText = team2State.avatar;
+            document.getElementById('avatar-char-1').innerText = team1State.avatar;
+            document.getElementById('avatar-char-2').innerText = team2State.avatar;
+
+            document.getElementById('screen-setup').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+
+            updateUI();
+            loadNewQuestion('team1');
+            loadNewQuestion('team2');
+            startTimer('team1');
+            startTimer('team2');
+        }
+
+        function pauseGame() {
+            playSound('click');
+            if (gameState.status !== 'playing') return;
+            gameState.status = 'pause';
+            stopAllTimers();
+            document.getElementById('modal-pause').classList.remove('hidden');
+        }
+
+        function resumeGame() {
+            playSound('click');
+            if (gameState.status !== 'pause') return;
+            gameState.status = 'playing';
+            document.getElementById('modal-pause').classList.add('hidden');
+            startTimer('team1');
+            startTimer('team2');
+        }
+
+        function resetGameAndRestart() {
+            playSound('click');
+            document.getElementById('modal-victory').classList.add('hidden');
+            document.getElementById('modal-pause').classList.add('hidden');
+            startBattle();
+        }
+
+        function stopAllTimers() {
+            if (team1State.timerInterval) clearInterval(team1State.timerInterval);
+            if (team2State.timerInterval) clearInterval(team2State.timerInterval);
+        }
+
+        /* ==========================================
+           TIMER LOGIC (INDEPENDENT FOR BOTH TEAMS)
+           ========================================== */
+        function startTimer(team) {
+            if (team === 'team1') {
+                if (team1State.timerInterval) clearInterval(team1State.timerInterval);
+                team1State.timer = 20;
+                team1State.timerInterval = setInterval(() => {
+                    if (gameState.status !== 'playing') return;
+                    team1State.timer--;
+                    document.getElementById('timer-team1').innerText = team1State.timer;
+                    if (team1State.timer <= 5 && team1State.timer > 0) {
+                        playSound('warning');
+                    }
+                    if (team1State.timer <= 0) {
+                        clearInterval(team1State.timerInterval);
+                        handleTimeout('team1');
+                    }
+                }, 1000);
+            } else {
+                if (team2State.timerInterval) clearInterval(team2State.timerInterval);
+                team2State.timer = 20;
+                team2State.timerInterval = setInterval(() => {
+                    if (gameState.status !== 'playing') return;
+                    team2State.timer--;
+                    document.getElementById('timer-team2').innerText = team2State.timer;
+                    if (team2State.timer <= 5 && team2State.timer > 0) {
+                        playSound('warning');
+                    }
+                    if (team2State.timer <= 0) {
+                        clearInterval(team2State.timerInterval);
+                        handleTimeout('team2');
+                    }
+                }, 1000);
+            }
+        }
+
+        function handleTimeout(team) {
+            if (team === 'team1') {
+                team1State.wrong++;
+                team1State.combo = 0;
+                showFeedback('team1', false, '⏰ WAKTU HABIS!', 'Waktu 20 detik habis. Jawaban dihitung salah dan combo direset.');
+            } else {
+                team2State.wrong++;
+                team2State.combo = 0;
+                showFeedback('team2', false, '⏰ WAKTU HABIS!', 'Waktu 20 detik habis. Jawaban dihitung salah dan combo direset.');
+            }
+        }
+
+        /* ==========================================
+           QUESTION & ANSWER MANAGEMENT
+           ========================================== */
+        function loadNewQuestion(team) {
+            // Pick random question, ensuring both teams don't get the exact same question simultaneously if possible
+            let qIdx = Math.floor(Math.random() * ipasQuestions.length);
+            if (team === 'team1' && qIdx === team2State.currentQIndex) {
+                qIdx = (qIdx + 1) % ipasQuestions.length;
+            } else if (team === 'team2' && qIdx === team1State.currentQIndex) {
+                qIdx = (qIdx + 1) % ipasQuestions.length;
+            }
+
+            const q = ipasQuestions[qIdx];
+            const prefix = team === 'team1' ? '1' : '2';
+            
+            if (team === 'team1') team1State.currentQIndex = qIdx;
+            else team2State.currentQIndex = qIdx;
+
+            document.getElementById(`q-category-${prefix}`).innerText = q.cat;
+            document.getElementById(`q-text-${prefix}`).innerText = q.q;
+
+            const optsContainer = document.getElementById(`options-container-${prefix}`);
+            optsContainer.innerHTML = '';
+
+            // Shuffle options or keep order with randomized display
+            q.opts.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.className = team === 'team1' 
+                    ? 'bg-blue-900/60 hover:bg-blue-800 border-2 border-blue-500/50 text-white font-bold p-3 rounded-2xl text-left transition transform active:scale-95 text-sm md:text-base flex items-center space-x-2'
+                    : 'bg-red-900/60 hover:bg-red-800 border-2 border-red-500/50 text-white font-bold p-3 rounded-2xl text-left transition transform active:scale-95 text-sm md:text-base flex items-center space-x-2';
+                
+                btn.innerHTML = `<span class="bg-black/30 px-2.5 py-1 rounded-xl text-xs">${String.fromCharCode(65 + optIdx)}</span> <span>${optText}</span>`;
+                btn.onclick = () => submitAnswer(team, optIdx, q.ans, q.exp);
+                optsContainer.appendChild(btn);
+            });
+
+            startTimer(team);
+        }
+
+        function submitAnswer(team, selectedOpt, correctOpt, explanation) {
+            if (gameState.status !== 'playing') return;
+            const tState = team === 'team1' ? team1State : team2State;
+            if (tState.isLocked) return;
+            tState.isLocked = true;
+
+            // Stop timer for this team while showing feedback
+            if (team === 'team1' && team1State.timerInterval) clearInterval(team1State.timerInterval);
+            if (team === 'team2' && team2State.timerInterval) clearInterval(team2State.timerInterval);
+
+            const isCorrect = (selectedOpt === correctOpt);
+
+            if (isCorrect) {
+                playSound('correct');
+                tState.score++;
+                tState.combo++;
+                if (tState.combo > tState.maxCombo) tState.maxCombo = tState.combo;
+
+                let pullBonus = 0;
+                if (tState.combo >= 2 && tState.combo < 3) pullBonus = 2;
+                else if (tState.combo >= 3 && tState.combo < 5) pullBonus = 4;
+                else if (tState.combo >= 5) pullBonus = 6;
+
+                pullRope(team, pullBonus);
+                showFeedback(team, true, '🎉 BENAR! +1 TARIKAN!', explanation);
+            } else {
+                playSound('wrong');
+                tState.wrong++;
+                tState.combo = 0;
+                showFeedback(team, false, '❌ BELUM TEPAT!', `Jawaban yang benar: ${ipasQuestions[tState.currentQIndex].opts[correctOpt]}. ${explanation}`);
+            }
+
+            updateUI();
+            checkMatchPointOrVictory();
+
+            // Hide feedback and load new question after 1.8 seconds
+            setTimeout(() => {
+                const prefix = team === 'team1' ? '1' : '2';
+                document.getElementById(`feedback-team-${prefix}`).classList.add('hidden');
+                tState.isLocked = false;
+                if (gameState.status === 'playing') {
+                    loadNewQuestion(team);
+                }
+            }, 1800);
+        }
+
+        function showFeedback(team, isCorrect, title, desc) {
+            const prefix = team === 'team1' ? '1' : '2';
+            const fb = document.getElementById(`feedback-team-${prefix}`);
+            document.getElementById(`feedback-icon-1` === `feedback-icon-${prefix}` ? `feedback-icon-1` : `feedback-icon-${prefix}`).innerText = isCorrect ? '🎉' : '❌';
+            document.getElementById(`feedback-title-${prefix}`).innerText = title;
+            document.getElementById(`feedback-title-${prefix}`).className = isCorrect ? 'text-2xl font-black text-emerald-400 mb-2' : 'text-2xl font-black text-rose-400 mb-2';
+            document.getElementById(`feedback-desc-${prefix}`).innerText = desc;
+            fb.classList.remove('hidden');
+        }
+
+        /* ==========================================
+           PHYSICAL TUG-OF-WAR ROPE MECHANICS
+           ========================================== */
+        function pullRope(team, comboBonus) {
+            playSound('pull');
+            let force = gameState.pullStrength + comboBonus;
+            if (team === 'team1') {
+                gameState.ropePosition -= force;
+                triggerArenaEffects('team1');
+            } else {
+                gameState.ropePosition += force;
+                triggerArenaEffects('team2');
+            }
+
+            // Clamp rope between -100 and +100
+            gameState.ropePosition = Math.max(-100, Math.min(100, gameState.ropePosition));
+            animateRopePosition();
+        }
+
+        function animateRopePosition() {
+            const ropeEl = document.getElementById('rope-element');
+            const knotEl = document.getElementById('rope-knot');
+            const char1 = document.getElementById('chars-team1');
+            const char2 = document.getElementById('chars-team2');
+
+            // Map ropePosition (-100 to +100) to pixel translation or percentage offset
+            // Center is 0. Negative = pulled left (Team 1), Positive = pulled right (Team 2)
+            let offsetPercent = (gameState.ropePosition / 100) * 35; // max 35% shift
+
+            ropeEl.style.transform = `translateX(${offsetPercent}%)`;
+            knotEl.style.left = `calc(50% + ${offsetPercent}%)`;
+
+            // Character slight movement mirroring rope tension
+            char1.style.transform = `translateX(${offsetPercent * 0.5}px)`;
+            char2.style.transform = `translateX(${offsetPercent * 0.5}px)`;
+
+            // Update Arena Indicator Status
+            const indicator = document.getElementById('arena-status-indicator');
+            if (gameState.ropePosition < -15) {
+                indicator.innerHTML = `🔵 ${team1State.name.toUpperCase()} UNGGUL TARIKAN! (${gameState.ropePosition})`;
+                indicator.className = "bg-blue-600 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-white/40 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide animate-pulse";
+            } else if (gameState.ropePosition > 15) {
+                indicator.innerHTML = `RED ${team2State.name.toUpperCase()} UNGGUL TARIKAN! (+${gameState.ropePosition})`;
+                indicator.className = "bg-red-600 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-white/40 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide animate-pulse";
+            } else {
+                indicator.innerHTML = `⚖️ TALI SEIMBANG DI TENGAH (${gameState.ropePosition})`;
+                indicator.className = "bg-slate-900/80 text-white font-extrabold px-6 py-1 rounded-2xl border-2 border-white/30 backdrop-blur-md text-sm md:text-base arcade-shadow tracking-wide";
+            }
+        }
+
+        function triggerArenaEffects(team) {
+            const prefix = team === 'team1' ? '1' : '2';
+            const dust = document.getElementById(`effect-dust-${prefix}`);
+            dust.style.opacity = '1';
+            setTimeout(() => {
+                dust.style.opacity = '0';
+            }, 600);
+        }
+
+        /* ==========================================
+           UI UPDATES & MATCH POINT / VICTORY
+           ========================================== */
+        function updateUI() {
+            // Scores
+            document.getElementById('score-team1').innerText = team1State.score;
+            document.getElementById('score-team2').innerText = team2State.score;
+
+            // Progress bars (Target 10)
+            const p1 = Math.min(100, (team1State.score / 10) * 100);
+            const p2 = Math.min(100, (team2State.score / 10) * 100);
+            document.getElementById('bar-team1').style.width = `${p1}%`;
+            document.getElementById('bar-team2').style.width = `${p2}%`;
+
+            // Combos
+            const badge1 = document.getElementById('combo-badge-1');
+            if (team1State.combo >= 2) {
+                badge1.innerText = team1State.combo >= 5 ? '🔥 SUPER COMBO!' : `🔥 COMBO x${team1State.combo}`;
+                badge1.classList.remove('hidden');
+            } else {
+                badge1.classList.add('hidden');
+            }
+
+            const badge2 = document.getElementById('combo-badge-2');
+            if (team2State.combo >= 2) {
+                badge2.innerText = team2State.combo >= 5 ? '🔥 SUPER COMBO!' : `🔥 COMBO x${team2State.combo}`;
+                badge2.classList.remove('hidden');
+            } else {
+                badge2.classList.add('hidden');
+            }
+        }
+
+        function checkMatchPointOrVictory() {
+            const mpBanner = document.getElementById('match-point-banner');
+
+            if (team1State.score >= 10 || team2State.score >= 10) {
+                triggerVictory(team1State.score >= 10 ? 'team1' : 'team2');
+                return;
+            }
+
+            if (team1State.score === 9 || team2State.score === 9) {
+                playSound('matchpoint');
+                mpBanner.classList.remove('hidden');
+                mpBanner.classList.add('pulse-match');
+            } else {
+                mpBanner.classList.add('hidden');
+            }
+        }
+
+        function triggerVictory(winningTeam) {
+            gameState.status = 'victory';
+            stopAllTimers();
+            playSound('victory');
+
+            const tName = winningTeam === 'team1' ? team1State.name : team2State.name;
+            const tAvatar = winningTeam === 'team1' ? team1State.avatar : team2State.avatar;
+
+            document.getElementById('victory-title').innerText = "🏆 VICTORY!";
+            document.getElementById('victory-subtitle').innerText = `${tAvatar} ${tName.toUpperCase()} MENANG!`;
+            document.getElementById('victory-desc').innerText = `Berhasil menarik tali dan mencapai 10 jawaban benar lebih dulu dalam Eco Battle IPAS Kelas 5!`;
+
+            document.getElementById('modal-victory').classList.remove('hidden');
+        }
+
+        // Initialize display on window load
+        window.onload = function() {
+            console.log("Tarik Tambang IPAS — Eco Battle initialized for PID 1920x1080.");
+        };
+    </script>
+</body>
+</html>
